@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * Implements hook_field_schema().
+ */
+function gridstack_field_field_schema($field) {
+  switch ($field['type']) {
+    case 'gridstack_field':
+      $columns = array(
+        'json' => array(
+          'type' => 'varchar',
+          'length' => 2048,
+          'not null' => FALSE,
+        ),
+      );
+      break;
+  }
+  return array(
+    'columns' => $columns,
+    'indexes' => array(
+      'value' => array('json'),
+    ),
+  );
+}
