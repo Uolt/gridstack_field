@@ -1,16 +1,17 @@
 /**
  * @file
- * A Backbone collections.
+ * Provides GridStack admin loader.
  */
 
-;(function ($, settings, Backbone) {
-  "use strict";
+(function ($, settings, Backbone) {
+
+  'use strict';
 
   /**
    * Backbone collections.
    */
   settings.GridstackField.Collections.GridItems = Backbone.Collection.extend({
-    addItems : function(data) {
+    addItems: function (data) {
       var model;
       _.each(data, function (el) {
         model = new settings.GridstackField.Models.GridItem({
@@ -23,7 +24,7 @@
         this.add(model);
       }, this);
 
-      new settings.GridstackField.Views.GridFieldItems({collection: this.models});
+      new settings.GridstackField.Views.GridFieldItems({collection: this});
     },
 
     addItem: function (nid) {

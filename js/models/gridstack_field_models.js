@@ -1,10 +1,11 @@
 /**
  * @file
- * A Backbone Model .
+ * Provides GridStack admin loader.
  */
 
-;(function ($, settings, Backbone) {
-  "use strict";
+(function ($, settings, Backbone) {
+
+  'use strict';
 
   // Create namespace for our app.
   settings.GridstackField = settings.GridstackField || {};

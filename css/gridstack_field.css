@@ -5,12 +5,3 @@
 .gridstack-items .grid-stack > .grid-stack-item > .grid-stack-item-content {
   overflow: hidden;
 }
-
-.gridstack-items .grid-stack-item[data-gs-width="4"]  { width: 100% }
-.gridstack-items .grid-stack-item[data-gs-width="3"]  { width: 75% }
-.gridstack-items .grid-stack-item[data-gs-width="2"]  { width: 50% }
-.gridstack-items .grid-stack-item[data-gs-width="1"]  { width: 25% }
-
-.gridstack-items .grid-stack-item[data-gs-x="3"]  { left: 75% }
-.gridstack-items .grid-stack-item[data-gs-x="2"]  { left: 50% }
-.gridstack-items .grid-stack-item[data-gs-x="1"]  { left: 25% }

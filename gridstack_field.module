@@ -1,6 +1,48 @@
 <?php
 
 /**
+ * @file
+ * Implements gridstack plugin for drupal.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function gridstack_field_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#gridstack_field':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This module implements Gridstack plugin as field. In this field we can configure which content types can be added and showed in this field. Than in field settings can be chosen settings for gridstack plugin. After this manipulations users on the site can create pages with themed grid of chosen nodes.</p>');
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('Adding Gridstack field') . '</dt>';
+      $output .= '<dd>' . t('Can be added on content type configuring page on Manage fields tab (admin/structure/types/manage/%/fields). For new field neet to choose field type property as "Gridstack field" and click save button.') . '</dd>';
+      $output .= '<dt>' . t('Configuring field') . '</dt>';
+      $output .= '<dd>' . t('Field can be configured on standart field edit page (admin/structure/types/manage/grid/fields/%field_name). On this page user can choose which content type can be added/displayed in our field.') . '</dd>';
+      $output .= '<dt>' . t('Gridstack plugin configuration') . '</dt>';
+      $output .= '<dd>' . t('Gridstack options can be configured on field sttings form (admin/structure/types/manage/grid/fields/%field_name), there are next parameters:');
+      $output .= '<ul><li>' . t('Height - maximum rows amount. Default is 0 which means no maximum rows.') . '</li>';
+      $output .= '<li>' . t('Width - amount of columns (default: 12).') . '</li>';
+      $output .= '<li>' . t('Cell height -  one cell height (default: 60). Can be: ') . '</li><ul>';
+      $output .= '<li>' . t('an integer (px)') . '</li>';
+      $output .= '<li>' . t('0 or null, in which case the library will not generate styles for rows. Everything must be defined in CSS files.') . '</li>';
+      $output .= '<li>' . t('"auto" - height will be calculated from cell width.') . '</li></ul>';      
+      $output .= '<li>' . t('Min width - minimal width. If window width is less, grid will be shown in one-column mode. You need also update your css file (@media (max-width: 768px) {...}) with corresponding value (default: 768).') . '</li>';
+      $output .= '<li>' . t('RTL - if true turns grid to RTL. Possible values are true, false, "auto" (default: "auto").') . '</li>';
+      $output .= '<li>' . t('Vertical margin - vertical gap size (default: 20).') . '</li>';
+      $output .= '<li>' . t('Animate - turns animation on (default: false).') . '</li>';
+      $output .= '<li>' . t('Always show resize handle - if true the resizing handles are shown even if the user is not hovering over the widget (default: false).') . '</li>';
+      $output .= '<li>' . t('Auto - if false gridstack will not initialize existing items (default: true).') . '</li>';
+      $output .= '<li>' . t('Disable drag - disallows dragging of widgets (default: false).') . '</li>';
+      $output .= '<li>' . t('Disable resize - disallows resizing of widgets (default: false).') . '</li>';
+      $output .= '<li>' . t('float - enable floating widgets (default: false).') . '</li></ul>';
+      $output .= '</dd></dl>';
+      return $output;
+  }
+}
+
+/**
  * Implements hook_menu().
  *
  * Define menu items and page callbacks.
@@ -34,7 +76,7 @@ function gridstack_field_init() {
 }
 
 /**
- * Implements hook_library.
+ * Implements hook_library().
  */
 function gridstack_field_library() {
   // Default library path.
@@ -56,7 +98,7 @@ function gridstack_field_library() {
       $path . 'underscore/underscore-min.js' => array(
         'group' => JS_LIBRARY,
       ),
-    )
+    ),
   );
 
   // Backbone library.
@@ -71,12 +113,12 @@ function gridstack_field_library() {
       ),
     ),
     'dependencies' => array(
-      array('gridstack_field', 'underscore')
+      array('gridstack_field', 'underscore'),
     ),
   );
 
   // Gridtack plugin.
-  $libraries['gridstack']  = array(
+  $libraries['gridstack'] = array(
     'title' => 'Gridtack plugin',
     'website' => 'http://troolee.github.io/gridstack.js/',
     'version' => 1,
@@ -118,28 +160,27 @@ function gridstack_field_library() {
       ),
     ),
   );
-  
-  $scripts = array('jquery-1.11.1.min.js',  'jquery-ui.js', 'knockout-min.js', 'knockout.mapping.js');
+  $scripts = array('//code.jquery.com/ui/1.11.4/jquery-ui.js', '//code.jquery.com/jquery-1.12.3.js');
   foreach ($scripts as $script) {
-    $libraries['gridstack_field_lib']['js'][$module_path . '/js/' . $script] = array('type' => 'file', 'group' => JS_LIBRARY);
+    $libraries['gridstack_field_lib']['js'][$script] = array('type' => 'file', 'group' => JS_LIBRARY);
   }
   return $libraries;
 }
 
 /**
- * @param $javascript
+ * Alters js on pages.
  */
 function gridstack_field_js_alter(&$javascript) {
- $path = drupal_get_path('module', 'gridstack_field') . '/js/jquery-1.11.1.min.js';
- $path_ui = drupal_get_path('module', 'gridstack_field') . '/js/jquery-ui.js';
- if (!empty($javascript[$path])) {
-   $javascript[$path]['weight'] = -20;
-   $javascript[$path]['every_page'] = TRUE;
-   $javascript[$path_ui]['weight'] = -15;
-   $javascript[$path_ui]['every_page'] = TRUE;
-   unset($javascript['misc/jquery.js']);
- }
- return $javascript;
+  $path = '//code.jquery.com/jquery-1.12.3.js';
+  $path_ui = '//code.jquery.com/ui/1.11.4/jquery-ui.js';
+  if (!empty($javascript[$path])) {
+    $javascript[$path]['weight'] = -20;
+    $javascript[$path]['every_page'] = TRUE;
+    $javascript[$path_ui]['weight'] = -15;
+    $javascript[$path_ui]['every_page'] = TRUE;
+    unset($javascript['misc/jquery.js']);
+  }
+  return $javascript;
 }
 
 /**
@@ -152,6 +193,20 @@ function gridstack_field_field_info() {
       'description' => t('Implements gridtack plugin'),
       'default_widget' => 'gridstack_field_widget',
       'default_formatter' => 'gridstack_field_formatter',
+      'settings' => array(
+        'height' => '0',
+        'width' => '12',
+        'cellHeight' => '60',
+        'minWidth' => '768',
+        'rtl' => 'auto',
+        'verticalMargin' => '10',
+        'animate' => 0,
+        'alwaysShowResizeHandle' => 0,
+        'auto' => 1,
+        'disableDrag' => 0,
+        'disableResize' => 0,
+        'float' => 0,
+      ),
     ),
   );
 }
@@ -172,21 +227,19 @@ function gridstack_field_field_widget_info() {
  * Implements hook_field_settings_form().
  */
 function gridstack_field_field_settings_form($field, $instance) {
-  $defaults = field_info_field_settings($field['type']);
+  $defaults['row_setting'] = field_info_field_settings($field['type']);
   $settings = array_merge($defaults, $field['settings']);
-  
+
   foreach (node_type_get_types() as $key => $type) {
-    $types = array();
-    $types[] =
     $form[$key] = array(
       '#type'  => 'checkbox',
-      '#title' => $type->name,
-      '#default_value' => $settings[$key] ? $settings[$key] : 0,
+      '#title' => check_plain($type->name),
+      '#default_value' => !empty($settings[$key]) ? $settings[$key] : 0,
     );
     $displays = gridstack_field_get_displays($key);
     $form[$key . '_display'] = array(
-     '#type'    => 'container',
-     '#states' => array(
+      '#type'   => 'container',
+      '#states' => array(
         'visible' => array(
           ':input[name="field[settings][' . $key . ']"]' => array('checked' => TRUE),
         ),
@@ -195,90 +248,90 @@ function gridstack_field_field_settings_form($field, $instance) {
     $form[$key . '_display']['settings'] = array(
       '#type'    => 'radios',
       '#options' => $displays,
-      '#default_value' => $settings[$key . '_display']['settings'] ? $settings[$key . '_display']['settings'] : 0,
+      '#default_value' => !empty($settings[$key . '_display']) ? $settings[$key . '_display']['settings'] : 0,
     );
   }
 
   // Settings for Gridstack plugin.
-  $form['height'] = array(
+  $form['row_setting'] = array(
+    '#type' => 'fieldset',
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#title' => t('Row settings'),
+  );
+  $form['row_setting']['height'] = array(
     '#title' => t('Height'),
     '#type' => 'textfield',
-    '#default_value' => $settings['height'],
+    '#default_value' => $settings['row_setting']['height'],
     '#maxlength' => 60,
     '#size' => 60,
   );
-  $form['width'] = array(
+  $form['row_setting']['width'] = array(
     '#title' => t('Width'),
     '#type' => 'textfield',
-    '#default_value' => $settings['width'],
+    '#default_value' => $settings['row_setting']['width'],
     '#maxlength' => 60,
     '#size' => 60,
   );
-  $form['cell-height'] = array(
+  $form['row_setting']['cellHeight'] = array(
     '#title' => t('Cell height'),
     '#type' => 'textfield',
-    '#default_value' => $settings['cell-height'],
+    '#default_value' => $settings['row_setting']['cellHeight'],
     '#maxlength' => 60,
     '#size' => 60,
   );
-  $form['min-width'] = array(
+  $form['row_setting']['minWidth'] = array(
     '#title' => t('Min width'),
     '#type' => 'textfield',
-    '#default_value' => $settings['min-width'],
+    '#default_value' => $settings['row_setting']['minWidth'],
     '#maxlength' => 60,
     '#size' => 60,
   );
-  $form['rtl'] = array(
+  $form['row_setting']['rtl'] = array(
     '#title' => t('RTL'),
     '#type' => 'textfield',
-    '#default_value' => $settings['rtl'],
+    '#default_value' => $settings['row_setting']['rtl'],
     '#maxlength' => 60,
     '#size' => 60,
   );
-  $form['vertical-margin'] = array(
+  $form['row_setting']['verticalMargin'] = array(
     '#title' => t('Vertical margin'),
     '#type' => 'textfield',
-    '#default_value' => $settings['vertical-margin'],
+    '#default_value' => $settings['row_setting']['verticalMargin'],
     '#maxlength' => 60,
     '#size' => 60,
   );
-  
-  $form['animate'] = array(
+  $form['row_setting']['animate'] = array(
     '#type'  => 'checkbox',
     '#title' => t('Animate'),
-    '#default_value' => $settings['animate'],
+    '#default_value' => $settings['row_setting']['animate'],
   );
-  $form['show-resize-handle'] = array(
+  $form['row_setting']['alwaysShowResizeHandle'] = array(
     '#type'  => 'checkbox',
     '#title' => t('Always show resize handle'),
-    '#default_value' => $settings['show-resize-handle'],
+    '#default_value' => $settings['row_setting']['alwaysShowResizeHandle'],
   );
-  $form['auto'] = array(
+  $form['row_setting']['auto'] = array(
     '#type'  => 'checkbox',
     '#title' => t('Auto'),
-    '#default_value' => $settings['auto'],
+    '#default_value' => $settings['row_setting']['auto'],
   );
-  $form['disable-drag'] = array(
+  $form['row_setting']['disableDrag'] = array(
     '#type'  => 'checkbox',
     '#title' => t('Disable drag'),
-    '#default_value' => $settings['disable-drag'],
+    '#default_value' => $settings['row_setting']['disableDrag'],
   );
-  $form['disable-resize'] = array(
+  $form['row_setting']['disableResize'] = array(
     '#type'  => 'checkbox',
     '#title' => t('Disable resize'),
-    '#default_value' => $settings['disable-resize'],
+    '#default_value' => $settings['row_setting']['disableResize'],
   );
-  $form['draggable'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Draggable'),
-    '#default_value' => $settings['draggable'],
-  );
-  $form['float'] = array(
+  $form['row_setting']['float'] = array(
     '#type'  => 'checkbox',
     '#title' => t('float'),
-    '#default_value' => $settings['float'],
+    '#default_value' => $settings['row_setting']['float'],
   );
-  
+
   return $form;
 }
 
@@ -288,20 +341,41 @@ function gridstack_field_field_settings_form($field, $instance) {
 function gridstack_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   switch ($instance['widget']['type']) {
     case 'gridstack_field':
+      $revert_options = array(
+        'animate',
+        'alwaysShowResizeHandle',
+        'auto',
+        'disableDrag',
+        'disableResize',
+        'float',
+      );
+      foreach ($revert_options as $option) {
+        $field['settings']['row_setting'][$option] = (bool) $field['settings']['row_setting'][$option];
+      }
+      $revert_options = array(
+        'height',
+        'width',
+        'cellHeight',
+        'minWidth',
+        'rtl',
+        'verticalMargin',
+      );
+      foreach ($revert_options as $option) {
+        $field['settings']['row_setting'][$option] = intval($field['settings']['row_setting'][$option]);
+      }
       // Pass settings into script.
       drupal_add_js(array('gridstack_field' => $field['settings']), array('type' => 'setting'));
 
-
       $value = isset($items[$delta]['json']) ? $items[$delta]['json'] : '';
       $element['items'] = array(
-        '#markup' => '<div class="gridstack-items"></div>'
+        '#markup' => '<div class="gridstack-items"><div class="grid-stack"></div></div>',
       );
       $element['gridstack_group'] = array(
         '#type' => 'fieldset',
         '#collapsible' => FALSE,
         '#collapsed' => FALSE,
-        '#title' => isset($element['#title']) ? $element['#title'] : '',
-        '#description' => isset($element['#description']) ? $element['#description'] : '',
+        '#title' => check_plain(isset($element['#title']) ? $element['#title'] : ''),
+        '#description' => check_plain(isset($element['#description']) ? $element['#description'] : ''),
       );
       $element['gridstack_group']['add_item'] = array(
         '#type' => 'button',
@@ -336,121 +410,22 @@ function gridstack_field_field_formatter_info() {
       'label' => t('Gridstack field'),
       'field types' => array('gridstack_field'),
       'settings'  => array(
-        'height' => '',
-        'width' => '',
-        'cell-height' => '',
-        'min-width' => '',
-        'rtl' => '',
-        'vertical-margin' => '',
-
+        'height' => '0',
+        'width' => '12',
+        'cellHeight' => '60',
+        'minWidth' => '768',
+        'rtl' => 'auto',
+        'verticalMargin' => '10',
         'animate' => 0,
-        'show-resize-handle' => 0,
-        'auto' => 0,
-        'disable-drag' => 0,
-        'disable-resize' => 0,
+        'alwaysShowResizeHandle' => 0,
+        'auto' => 1,
+        'disableDrag' => 0,
+        'disableResize' => 0,
         'draggable' => 0,
         'float' => 0,
       ),
     ),
   );
-}
-
-/**
- * Implements hook_field_formatter_settings_form().
- */
-function gridstack_field_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
-  $display = $instance['display'][$view_mode];
-  $settings = $display['settings'];
-
-  $element = array();
-  
-  $element['height'] = array(
-    '#title' => t('Height'),
-    '#type' => 'textfield',
-    '#default_value' => $settings['height'],
-    '#maxlength' => 60,
-    '#size' => 60,
-  );
-  $element['width'] = array(
-    '#title' => t('Width'),
-    '#type' => 'textfield',
-    '#default_value' => $settings['width'],
-    '#maxlength' => 60,
-    '#size' => 60,
-  );
-  $element['cell-height'] = array(
-    '#title' => t('Cell height'),
-    '#type' => 'textfield',
-    '#default_value' => $settings['cell-height'],
-    '#maxlength' => 60,
-    '#size' => 60,
-  );
-  $element['min-width'] = array(
-    '#title' => t('Min width'),
-    '#type' => 'textfield',
-    '#default_value' => $settings['min-width'],
-    '#maxlength' => 60,
-    '#size' => 60,
-  );
-  $element['rtl'] = array(
-    '#title' => t('RTL'),
-    '#type' => 'textfield',
-    '#default_value' => $settings['rtl'],
-    '#maxlength' => 60,
-    '#size' => 60,
-  );
-  $element['vertical-margin'] = array(
-    '#title' => t('Vertical margin'),
-    '#type' => 'textfield',
-    '#default_value' => $settings['vertical-margin'],
-    '#maxlength' => 60,
-    '#size' => 60,
-  );
-  
-  $element['animate'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Animate'),
-    '#default_value' => $settings['animate'],
-  );
-  $element['show-resize-handle'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Always show resize handle'),
-    '#default_value' => $settings['show-resize-handle'],
-  );
-  $element['auto'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Auto'),
-    '#default_value' => $settings['auto'],
-  );
-  $element['disable-drag'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Disable drag'),
-    '#default_value' => $settings['disable-drag'],
-  );
-  $element['disable-resize'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Disable resize'),
-    '#default_value' => $settings['disable-resize'],
-  );
-  $element['draggable'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('Draggable'),
-    '#default_value' => $settings['draggable'],
-  );
-  $element['float'] = array(
-    '#type'  => 'checkbox',
-    '#title' => t('float'),
-    '#default_value' => $settings['float'],
-  );
-
-  return $element;
-}
-
-/**
- * Implements hook_field_formatter_settings_summary().
- */
-function gridstack_field_field_formatter_settings_summary($field, $instance, $view_mode) {
-  return 'Gridstack field';
 }
 
 /**
@@ -465,13 +440,34 @@ function gridstack_field_field_formatter_view($entity_type, $entity, $field, $in
       foreach ($items as $delta => $item) {
         // If we have item then.
         if ($item['json']) {
-          $formattedText = $item['json'];
+          $formatted_text = $item['json'];
           // Show text with tags.
-          $element[$delta]['#markup'] = $formattedText;
+          $element[$delta]['#markup'] = $formatted_text;
         }
-        
+
+        $revert_options = array(
+          'animate',
+          'alwaysShowResizeHandle',
+          'auto',
+          'disableDrag',
+          'disableResize',
+          'float',
+        );
+        foreach ($revert_options as $option) {
+          $field['settings']['row_setting'][$option] = (bool) $field['settings']['row_setting'][$option];
+        }
+        $revert_options = array(
+          'height',
+          'width',
+          'cellHeight',
+          'minWidth',
+          'rtl',
+          'verticalMargin',
+        );
+        foreach ($revert_options as $option) {
+          $field['settings']['row_setting'][$option] = intval($field['settings']['row_setting'][$option]);
+        }
         // Pass settings into script.
-        // drupal_add_js(array('gridstack_field' => $display['settings']), array('type' => 'setting'));
         drupal_add_js(array('gridstack_field' => $field['settings']), array('type' => 'setting'));
       }
       break;
@@ -484,16 +480,15 @@ function gridstack_field_field_formatter_view($entity_type, $entity, $field, $in
  */
 function gridstack_field_field_is_empty($item, $field) {
   if (empty($item['json'])) {
-    return true;
+    return TRUE;
   }
 }
 
 /**
- * @param $node
  * Callback for loading nodes.
  */
 function gridstack_field_node_callback($node, $display = 'teaser') {
-  if($node->status == 0 || $node->field_hidden['und'][0]['value'] == 1) {
+  if ($node->status == 0 || $node->field_hidden[LANGUAGE_NONE][0]['value'] == 1) {
     drupal_add_http_header('Status', '404 Not Found');
     drupal_fast_404();
   }
@@ -502,7 +497,6 @@ function gridstack_field_node_callback($node, $display = 'teaser') {
 }
 
 /**
- * @param $nid
  * Callback for autocomplete field.
  */
 function gridstack_field_autocomplete_callback($field_name, $string) {
@@ -525,16 +519,15 @@ function gridstack_field_autocomplete_callback($field_name, $string) {
     foreach ($query as $row) {
       $matches[$row->nid] = $row->title . '  [' . $row->type . ']';
     }
-    // Return the result to the form in json
+    // Return the result to the form in json.
     drupal_json_output($matches);
   }
 }
 
 /**
- *  Get enables content types displays
+ * Get enables content types displays.
  */
 function gridstack_field_get_displays($type) {
-  $options = array();
   $entity_info = entity_get_info('node');
   $view_modes = $entity_info['view modes'];
   $view_mode_settings = field_view_mode_settings('node', $type);
