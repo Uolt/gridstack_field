@@ -1,7 +1,9 @@
 INTRODUCTION
 ------------
 
-This module implements Gridstack plugin as field.
+This module implements Gridstack plugin as field. User can create custom
+configurable grid layout and display in this grid different nodes.
+This can help to create "uncommon" landing pages.
 
 See the GridStack JS docs at:
 o https://github.com/troolee/gridstack.js
