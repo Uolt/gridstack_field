@@ -34,7 +34,8 @@ For installing module needs to download next libs and put them into
 related sites/all/libraries directories on the site:
  * Backbone (http://backbonejs.org/) - sites/all/libraries/backbone
  * Underscore (http://underscorejs.org/) - sites/all/libraries/underscore
- * Gridstack plugin(https://github.com/troolee/gridstack.js)
+ * Gridstack plugin (https://github.com/troolee/gridstack.js/blob/master/dist/gridstack.min.css
+   https://github.com/troolee/gridstack.js/blob/master/dist/gridstack.min.js)
    - sites/all/libraries/gridstack
 
 
@@ -44,7 +45,7 @@ USES
 Adding Gridstack field
   Can be added on content type configuring page on Manage fields tab
   (admin/structure/types/manage/%/fields).
-  For new field neet to choose field type property as "Gridstack field"
+  For new field need to choose field type property as "Gridstack field"
   and click save button.
 
 

@@ -40,6 +40,40 @@ function gridstack_field_help($path, $arg) {
       $output .= '</dd></dl>';
       return $output;
   }
+
+//  switch ($path) {
+//    case 'admin/help#gridstack_field':
+//
+//      $filepath = dirname(__FILE__) . '/README.md';
+//      if (file_exists($filepath)) {
+//        $readme = file_get_contents($filepath);
+//      }
+//      else {
+//        $filepath = dirname(__FILE__) . '/README.txt';
+//        if (file_exists($filepath)) {
+//          $readme = file_get_contents($filepath);
+//        }
+//      }
+//      if (!isset($readme)) {
+//        return NULL;
+//      }
+//      if (module_exists('markdown')) {
+//        $filters = module_invoke('markdown', 'filter_info');
+//        $info = $filters['filter_markdown'];
+//
+//        if (function_exists($info['process callback'])) {
+//          $output = $info['process callback']($readme, NULL);
+//        }
+//        else {
+//          $output = '<pre>' . $readme . '</pre>';
+//        }
+//      }
+//      else {
+//        $output = '<pre>' . $readme . '</pre>';
+//      }
+//
+//      return $output;
+//  }
 }
 
 /**
@@ -469,8 +503,9 @@ function gridstack_field_node_callback($node, $display = 'teaser') {
     drupal_add_http_header('Status', '404 Not Found');
     drupal_fast_404();
   }
+  $node_for_displaying = node_view($node, $display);
 
-  return print render(node_view($node, $display));
+  return print render($node_for_displaying);
 }
 
 /**
