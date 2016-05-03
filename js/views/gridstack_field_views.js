@@ -1,6 +1,7 @@
 /**
  * @file
- * Provides GridStack admin loader.
+ * Gridstack backbone views.
+ * Implements view for outputing structure of field.
  */
 
 (function ($, settings, Backbone) {
@@ -22,6 +23,7 @@
       this.render();
     },
 
+    // Method for changing item's options on resize or move events.
     changeItems: function (event, items) {
       var self = this;
       $(items).each(function () {
@@ -32,6 +34,8 @@
       });
       this.updateJsonField();
     },
+
+    // Update data in json field.
     updateJsonField: function (collection) {
       $(this.field).find('input[name$="[json]"]').val(JSON.stringify(this.collection));
     },
@@ -49,7 +53,7 @@
       }
       else {
         this.$el.append(item.render().el);
-        // Gradstack plugin.
+        // Implements gradstack plugin.
         var options = Drupal.settings.gridstack_field.row_setting;
         $('.gridstack-items .grid-stack').gridstack(options);
       }
@@ -74,10 +78,12 @@
       this.render();
     },
 
+    // Update data in json field.
     updateJsonField: function (collection) {
       $(this.field).find('input[name$="[json]"]').val(JSON.stringify(this.collection));
     },
 
+    // Method for changing item's options on resize or move events.
     changeItems: function (event, items) {
       var self = this;
       $(items).each(function () {
@@ -91,6 +97,7 @@
 
     render: function () {
       var self = this;
+      // Add rendered items into grid element.
       _.each(this.collection.models, function (element, index, list) {
         var item = new settings.GridstackField.Views.GridFieldItem({model: element, collection: self.collection});
         this.$el.append(item.render().el);
@@ -108,13 +115,13 @@
     className: 'grid-stack-item',
     tagName: 'div',
 
+    // Remove item from grid and collection.
     removeItem: function () {
       this.collection.remove(this.model);
       this.remove();
     },
 
     render: function () {
-
       var href = this.model.url;
       var x = this.model.toJSON().positionX;
       var y = this.model.toJSON().positionY;
@@ -125,12 +132,13 @@
       var $body = $('body');
       self.$el.append('<div class="grid-stack-item-content"></div>');
 
+      // Load content for item.
       $.ajax({
         url: href,
         success: function (data) {
           self.$el.find('.grid-stack-item-content').append(data);
           if ($body.hasClass('page-node-edit') || $body.hasClass('page-node-add')) {
-            self.$el.find('.grid-stack-item-content').prepend('<button class="remove-item">REMOVE</button>');
+            self.$el.find('.grid-stack-item-content').prepend('<button class="remove-item">' + Drupal.t('Remove') + '</button>');
           }
           // Add events to button here because 'clean' drupal doesn't support 'on' method.
           self.$el.delegate('.remove-item', 'click', function (e) {
@@ -148,5 +156,4 @@
       return this;
     }
   });
-
 }(jQuery, Drupal.settings, Backbone));

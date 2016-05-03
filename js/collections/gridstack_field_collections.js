@@ -1,6 +1,7 @@
 /**
  * @file
- * Provides GridStack admin loader.
+ * Gridstack backbone collections.
+ * Implements collection for containing models of grid items.
  */
 
 (function ($, settings, Backbone) {
@@ -11,6 +12,8 @@
    * Backbone collections.
    */
   settings.GridstackField.Collections.GridItems = Backbone.Collection.extend({
+
+    // Method for adding items into our collection and grid.
     addItems: function (data) {
       var model;
       _.each(data, function (el) {
@@ -27,11 +30,11 @@
       new settings.GridstackField.Views.GridFieldItems({collection: this});
     },
 
+    // Method for adding single item into grid and collection.
     addItem: function (nid) {
       var itemModel = new settings.GridstackField.Models.GridItem({id: nid});
       this.add(itemModel);
       new settings.GridstackField.Views.GridField({model: itemModel, collection: this});
     }
   });
-
 }(jQuery, Drupal.settings, Backbone));

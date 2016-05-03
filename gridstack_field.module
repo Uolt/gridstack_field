@@ -24,10 +24,10 @@ function gridstack_field_help($path, $arg) {
       $output .= '<dd>' . t('Gridstack options can be configured on field sttings form (admin/structure/types/manage/grid/fields/%field_name), there are next parameters:');
       $output .= '<ul><li>' . t('Height - maximum rows amount. Default is 0 which means no maximum rows.') . '</li>';
       $output .= '<li>' . t('Width - amount of columns (default: 12).') . '</li>';
-      $output .= '<li>' . t('Cell height -  one cell height (default: 60). Can be: ') . '</li><ul>';
+      $output .= '<li>' . t('Cell height -  one cell height (default: 60). Can be:') . '</li><ul>';
       $output .= '<li>' . t('an integer (px)') . '</li>';
       $output .= '<li>' . t('0 or null, in which case the library will not generate styles for rows. Everything must be defined in CSS files.') . '</li>';
-      $output .= '<li>' . t('"auto" - height will be calculated from cell width.') . '</li></ul>';      
+      $output .= '<li>' . t('"auto" - height will be calculated from cell width.') . '</li></ul>';
       $output .= '<li>' . t('Min width - minimal width. If window width is less, grid will be shown in one-column mode. You need also update your css file (@media (max-width: 768px) {...}) with corresponding value (default: 768).') . '</li>';
       $output .= '<li>' . t('RTL - if true turns grid to RTL. Possible values are true, false, "auto" (default: "auto").') . '</li>';
       $output .= '<li>' . t('Vertical margin - vertical gap size (default: 20).') . '</li>';
@@ -67,15 +67,6 @@ function gridstack_field_menu() {
 }
 
 /**
- * Implements hook_init().
- */
-function gridstack_field_init() {
-  // Add Backbone, Underscore and Gridstack libraries for all pages.
-  drupal_add_library('gridstack_field', 'gridstack', TRUE);
-  drupal_add_library('gridstack_field', 'gridstack_field_lib', TRUE);
-}
-
-/**
  * Implements hook_library().
  */
 function gridstack_field_library() {
@@ -85,8 +76,7 @@ function gridstack_field_library() {
 
   $module_path = drupal_get_path('module', 'gridstack_field');
 
-  // Sometimes it's gonna be just 'css' => []
-  // At least I hope so. For now it's $a shortcut, deal with it.
+  // It's gonna be just 'css' => []
   $a = array();
 
   $libraries['underscore'] = array(
@@ -341,30 +331,23 @@ function gridstack_field_field_settings_form($field, $instance) {
 function gridstack_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   switch ($instance['widget']['type']) {
     case 'gridstack_field':
-      $revert_options = array(
-        'animate',
-        'alwaysShowResizeHandle',
-        'auto',
-        'disableDrag',
-        'disableResize',
-        'float',
-      );
-      foreach ($revert_options as $option) {
+      // Converting options to boolean type for preventing issues with incorrect types.
+      $options = gridstack_field_get_options('bool');
+      foreach ($options as $option) {
         $field['settings']['row_setting'][$option] = (bool) $field['settings']['row_setting'][$option];
       }
-      $revert_options = array(
-        'height',
-        'width',
-        'cellHeight',
-        'minWidth',
-        'rtl',
-        'verticalMargin',
-      );
-      foreach ($revert_options as $option) {
+
+      // Converting options to int type for preventing issues with incorrect types.
+      $options = gridstack_field_get_options('int');
+      foreach ($options as $option) {
         $field['settings']['row_setting'][$option] = intval($field['settings']['row_setting'][$option]);
       }
       // Pass settings into script.
       drupal_add_js(array('gridstack_field' => $field['settings']), array('type' => 'setting'));
+
+      // Add Backbone, Underscore and Gridstack libraries.
+      drupal_add_library('gridstack_field', 'gridstack', TRUE);
+      drupal_add_library('gridstack_field', 'gridstack_field_lib', TRUE);
 
       $value = isset($items[$delta]['json']) ? $items[$delta]['json'] : '';
       $element['items'] = array(
@@ -445,30 +428,24 @@ function gridstack_field_field_formatter_view($entity_type, $entity, $field, $in
           $element[$delta]['#markup'] = $formatted_text;
         }
 
-        $revert_options = array(
-          'animate',
-          'alwaysShowResizeHandle',
-          'auto',
-          'disableDrag',
-          'disableResize',
-          'float',
-        );
-        foreach ($revert_options as $option) {
+        // Converting options to boolean type for preventing issues with incorrect types.
+        $options = gridstack_field_get_options('bool');
+        foreach ($options as $option) {
           $field['settings']['row_setting'][$option] = (bool) $field['settings']['row_setting'][$option];
         }
-        $revert_options = array(
-          'height',
-          'width',
-          'cellHeight',
-          'minWidth',
-          'rtl',
-          'verticalMargin',
-        );
-        foreach ($revert_options as $option) {
+
+        // Converting options to int type for preventing issues with incorrect types.
+        $options = gridstack_field_get_options('int');
+        foreach ($options as $option) {
           $field['settings']['row_setting'][$option] = intval($field['settings']['row_setting'][$option]);
         }
+
         // Pass settings into script.
         drupal_add_js(array('gridstack_field' => $field['settings']), array('type' => 'setting'));
+
+        // Add Backbone, Underscore and Gridstack libraries.
+        drupal_add_library('gridstack_field', 'gridstack', TRUE);
+        drupal_add_library('gridstack_field', 'gridstack_field_lib', TRUE);
       }
       break;
   }
@@ -488,7 +465,7 @@ function gridstack_field_field_is_empty($item, $field) {
  * Callback for loading nodes.
  */
 function gridstack_field_node_callback($node, $display = 'teaser') {
-  if ($node->status == 0 || $node->field_hidden[LANGUAGE_NONE][0]['value'] == 1) {
+  if ($node->status == 0) {
     drupal_add_http_header('Status', '404 Not Found');
     drupal_fast_404();
   }
@@ -500,6 +477,10 @@ function gridstack_field_node_callback($node, $display = 'teaser') {
  * Callback for autocomplete field.
  */
 function gridstack_field_autocomplete_callback($field_name, $string) {
+  // Using check functions on output to prevent cross site scripting attacks.
+  $field_name = check_plain($field_name);
+  $string = check_plain($string);
+
   $field = field_info_field($field_name);
 
   // Get array of content types from field settings.
@@ -538,4 +519,46 @@ function gridstack_field_get_displays($type) {
     }
   }
   return $displays;
+}
+
+/**
+ * Return array with keys of options for gridstack plugin separated by type.
+ *
+ * @param string $type
+ *  Determine which type of options should be returned.
+ *
+ * @return array $options
+ *  An array with options keys.
+ */
+function gridstack_field_get_options($type) {
+  $options = array();
+
+  switch ($type) {
+    case 'bool':
+      $options = array(
+        'animate',
+        'alwaysShowResizeHandle',
+        'auto',
+        'disableDrag',
+        'disableResize',
+        'float',
+      );
+      break;
+
+    case 'int':
+      $options = array(
+        'height',
+        'width',
+        'cellHeight',
+        'minWidth',
+        'rtl',
+        'verticalMargin',
+      );
+      break;
+
+    default:
+      break;
+  }
+
+  return $options;
 }

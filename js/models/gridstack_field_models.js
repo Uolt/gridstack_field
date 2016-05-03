@@ -1,6 +1,7 @@
 /**
  * @file
- * Provides GridStack admin loader.
+ * Gridstack backbone models.
+ * Implements model functionality for single grid item.
  */
 
 (function ($, settings, Backbone) {
@@ -33,5 +34,4 @@
       this.url = '/gridstack_field/' + this.id + '/teaser';
     }
   });
-
 }(jQuery, Drupal.settings, Backbone));
