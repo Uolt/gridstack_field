@@ -11,69 +11,37 @@
 function gridstack_field_help($path, $arg) {
   switch ($path) {
     case 'admin/help#gridstack_field':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('This module implements Gridstack plugin as field. In this field we can configure which content types can be added and showed in this field. Than in field settings can be chosen settings for gridstack plugin. After this manipulations users on the site can create pages with themed grid of chosen nodes.</p>');
-      $output .= '<h3>' . t('Uses') . '</h3>';
-      $output .= '<dl>';
-      $output .= '<dt>' . t('Adding Gridstack field') . '</dt>';
-      $output .= '<dd>' . t('Can be added on content type configuring page on Manage fields tab (admin/structure/types/manage/%/fields). For new field neet to choose field type property as "Gridstack field" and click save button.') . '</dd>';
-      $output .= '<dt>' . t('Configuring field') . '</dt>';
-      $output .= '<dd>' . t('Field can be configured on standart field edit page (admin/structure/types/manage/grid/fields/%field_name). On this page user can choose which content type can be added/displayed in our field.') . '</dd>';
-      $output .= '<dt>' . t('Gridstack plugin configuration') . '</dt>';
-      $output .= '<dd>' . t('Gridstack options can be configured on field sttings form (admin/structure/types/manage/grid/fields/%field_name), there are next parameters:');
-      $output .= '<ul><li>' . t('Height - maximum rows amount. Default is 0 which means no maximum rows.') . '</li>';
-      $output .= '<li>' . t('Width - amount of columns (default: 12).') . '</li>';
-      $output .= '<li>' . t('Cell height -  one cell height (default: 60). Can be:') . '</li><ul>';
-      $output .= '<li>' . t('an integer (px)') . '</li>';
-      $output .= '<li>' . t('0 or null, in which case the library will not generate styles for rows. Everything must be defined in CSS files.') . '</li>';
-      $output .= '<li>' . t('"auto" - height will be calculated from cell width.') . '</li></ul>';
-      $output .= '<li>' . t('Min width - minimal width. If window width is less, grid will be shown in one-column mode. You need also update your css file (@media (max-width: 768px) {...}) with corresponding value (default: 768).') . '</li>';
-      $output .= '<li>' . t('RTL - if true turns grid to RTL. Possible values are true, false, "auto" (default: "auto").') . '</li>';
-      $output .= '<li>' . t('Vertical margin - vertical gap size (default: 20).') . '</li>';
-      $output .= '<li>' . t('Animate - turns animation on (default: false).') . '</li>';
-      $output .= '<li>' . t('Always show resize handle - if true the resizing handles are shown even if the user is not hovering over the widget (default: false).') . '</li>';
-      $output .= '<li>' . t('Auto - if false gridstack will not initialize existing items (default: true).') . '</li>';
-      $output .= '<li>' . t('Disable drag - disallows dragging of widgets (default: false).') . '</li>';
-      $output .= '<li>' . t('Disable resize - disallows resizing of widgets (default: false).') . '</li>';
-      $output .= '<li>' . t('float - enable floating widgets (default: false).') . '</li></ul>';
-      $output .= '</dd></dl>';
+
+      $filepath = dirname(__FILE__) . '/README.md';
+      if (file_exists($filepath)) {
+        $readme = file_get_contents($filepath);
+      }
+      else {
+        $filepath = dirname(__FILE__) . '/README.txt';
+        if (file_exists($filepath)) {
+          $readme = file_get_contents($filepath);
+        }
+      }
+      if (!isset($readme)) {
+        return NULL;
+      }
+      if (module_exists('markdown')) {
+        $filters = module_invoke('markdown', 'filter_info');
+        $info = $filters['filter_markdown'];
+
+        if (function_exists($info['process callback'])) {
+          $output = $info['process callback']($readme, NULL);
+        }
+        else {
+          $output = '<pre>' . $readme . '</pre>';
+        }
+      }
+      else {
+        $output = '<pre>' . $readme . '</pre>';
+      }
+
       return $output;
   }
-
-//  switch ($path) {
-//    case 'admin/help#gridstack_field':
-//
-//      $filepath = dirname(__FILE__) . '/README.md';
-//      if (file_exists($filepath)) {
-//        $readme = file_get_contents($filepath);
-//      }
-//      else {
-//        $filepath = dirname(__FILE__) . '/README.txt';
-//        if (file_exists($filepath)) {
-//          $readme = file_get_contents($filepath);
-//        }
-//      }
-//      if (!isset($readme)) {
-//        return NULL;
-//      }
-//      if (module_exists('markdown')) {
-//        $filters = module_invoke('markdown', 'filter_info');
-//        $info = $filters['filter_markdown'];
-//
-//        if (function_exists($info['process callback'])) {
-//          $output = $info['process callback']($readme, NULL);
-//        }
-//        else {
-//          $output = '<pre>' . $readme . '</pre>';
-//        }
-//      }
-//      else {
-//        $output = '<pre>' . $readme . '</pre>';
-//      }
-//
-//      return $output;
-//  }
 }
 
 /**

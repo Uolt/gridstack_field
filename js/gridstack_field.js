@@ -49,7 +49,6 @@
    * Implements grid and backbone collections on node view and edit page.
    */
   $(document).ready(function () {
-    console.log('ROBEEEEEEEEE');
     var collection;
     var input = '';
     var data;

@@ -1,7 +1,7 @@
 /**
  * @file
  * Gridstack backbone views.
- * Implements view for outputing structure of field.
+ * Implements view for outputting structure of field.
  */
 
 (function ($, settings, Backbone) {
