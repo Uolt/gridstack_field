@@ -1,0 +1,129 @@
+<?php
+
+namespace Drupal\gridstack_field\Controller;
+
+
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Database\Connection;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\node\NodeInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * Page callbacks for gridstack module.
+ */
+class GridstackFieldNodeController extends ControllerBase {
+
+  /**
+   * \Symfony\Component\HttpFoundation\Response response
+   */
+  private $response;
+
+
+  private $html;
+
+  /**
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private $config_factory;
+
+  /**
+   * @var \Drupal\Core\Database\Connection
+   */
+  private $connection;
+
+  /**
+   * @var \Drupal\field\Entity\FieldStorageConfig
+   */
+  private $field_storage_config;
+
+  /**
+   * GridstackFieldNodeController constructor.
+   *
+   * @param \Symfony\Component\HttpFoundation\Response $response
+   * @param \Drupal\Component\Utility\Html             $html
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   * @param \Drupal\Core\Database\Connection           $connection
+   * @param \Drupal\field\Entity\FieldStorageConfig    $field_storage_config
+   */
+  public function __construct(Response $response, Html $html, ConfigFactoryInterface $config_factory, Connection $connection, FieldStorageConfig $field_storage_config) {
+    $this->response = $response;
+    $this->html = $html;
+    $this->config_factory = $config_factory;
+    $this->connection = $connection;
+    $this->field_storage_config = $field_storage_config;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+//  public static function create(ContainerInterface $container) {
+//    return new static(
+//      $container->get('database')
+//    );
+//  }
+
+  /**
+   * Callback for loading nodes.
+   *
+   * @param        $node
+   * @param string $display
+   *
+   * @return int
+   */
+  public function nodeCallback(NodeInterface $node, $display = 'teaser') {
+    if (!$node->isPublished()) {
+      $config = $this->configFactory->get('system.performance');
+      $this->response->headers->set('Status', '404 Not Found');
+
+      $fast_404_html = strtr($config->get('fast_404.html'), ['@path' => $this->html->escape(\Drupal::request()->getUri())]);
+      return new Response($fast_404_html, Response::HTTP_NOT_FOUND);
+    }
+    $node_for_displaying = node_view($node, $display);
+
+    return print render($node_for_displaying);
+  }
+
+  /**
+   * Callback for autocomplete field.
+   *
+   * @param $field_name
+   * @param $string
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   */
+  public function autocompleteCallback($field_name, $string) {
+    // Using check functions on output to prevent cross site scripting attacks.
+    $field_name = $this->html->escape($field_name);
+    $string = $this->html->escape($string);
+
+//    $field = field_info_field($field_name);
+    $field = $this->field_storage_config->loadByName('node', $field_name);
+
+    // Get array of content types from field settings.
+    $type = array_filter($field['settings'], function ($v) {
+      return $v === 1;
+    });
+    $type = array_keys($type);
+
+    $connection = $this->connection;
+    if (!empty($type)) {
+      $matches = array();
+      $res = $connection->select('node', 'n');
+      $res->fields('n', array('title', 'nid', 'type'));
+      $res->condition('title', '%' . $connection->escapeLike($string) . '%', 'LIKE');
+      $res->condition('type', $type, 'IN');
+      $res->range(0, 10);
+      $query = $res->execute()->fetchAll();
+      foreach ($query as $row) {
+        $matches[$row->nid] = $row->title . '  [' . $row->type . ']';
+      }
+      // Return the result to the form in json.
+      return new JsonResponse($matches);
+    }
+  }
+}

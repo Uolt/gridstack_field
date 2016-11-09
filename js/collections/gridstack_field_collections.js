@@ -1,6 +1,7 @@
 /**
  * @file
  * Gridstack backbone collections.
+ *
  * Implements collection for containing models of grid items.
  */
 

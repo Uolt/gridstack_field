@@ -1,6 +1,7 @@
 /**
  * @file
  * Gridstack backbone models.
+ *
  * Implements model functionality for single grid item.
  */
 
