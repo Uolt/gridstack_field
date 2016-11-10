@@ -68,16 +68,16 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $plugin_id,
-      $plugin_definition,
-      $configuration['field_definition'],
-      $configuration['settings'],
-      $configuration['third_party_settings'],
-      $container->get('config.factory'),
-      $container->get('gridstack_field.helper'),
-      $container->get('html')
-    );
+//    return new static(
+//      $plugin_id,
+//      $plugin_definition,
+//      $configuration['field_definition'],
+//      $configuration['settings'],
+//      $configuration['third_party_settings'],
+//      $container->get('config.factory'),
+//      $container->get('gridstack_field.helper'),
+//      $container->get('html')
+//    );
   }
 
   /**

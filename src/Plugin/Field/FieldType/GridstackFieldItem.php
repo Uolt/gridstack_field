@@ -73,11 +73,7 @@ class GridstackFieldItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
-    $properties['value'] = DataDefinition::create('string')
-      ->setLabel(new TranslatableMarkup('Gridstack field'))
-      ->setSetting('case_sensitive', $field_definition->getSetting('case_sensitive'))
-      ->setRequired(FALSE);
-
+    $properties['json'] = DataDefinition::create('string');
     return $properties;
   }
 
