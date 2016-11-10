@@ -1,6 +1,7 @@
 /**
  * @file
  * Gridstack backbone views.
+ *
  * Implements view for outputting structure of field.
  */
 

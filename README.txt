@@ -34,9 +34,10 @@ For installing module needs to download next libs and put them into
 related sites/all/libraries directories on the site:
  * Backbone (http://backbonejs.org/) - sites/all/libraries/backbone
  * Underscore (http://underscorejs.org/) - sites/all/libraries/underscore
- * Gridstack plugin (https://github.com/troolee/gridstack.js/blob/master/dist/gridstack.min.css
-   https://github.com/troolee/gridstack.js/blob/master/dist/gridstack.min.js)
-   - sites/all/libraries/gridstack
+ * Gridstack plugin
+    (https://github.com/troolee/gridstack.js/blob/master/dist/gridstack.min.css
+    https://github.com/troolee/gridstack.js/blob/master/dist/gridstack.min.js)
+    - sites/all/libraries/gridstack
 
 
 USES
@@ -76,7 +77,8 @@ Gridstack plugin configuration
     - Animate - turns animation on (default: false).
     - Always show resize handle - if true the resizing handles are shown
       even if the user is not hovering over the widget (default: false).
-    - Auto - if false gridstack will not initialize existing items (default: true).
+    - Auto - if false gridstack will not initialize existing items
+      (default: true).
     - Disable drag - disallows dragging of widgets (default: false).
     - Disable resize - disallows resizing of widgets (default: false).
     - float - enable floating widgets (default: false).
