@@ -42,17 +42,10 @@ class GridstackFieldNodeController extends ControllerBase {
   private $field_storage_config;
 
   /**
-   * GridstackFieldNodeController constructor.
-   *
-   * @param \Symfony\Component\HttpFoundation\Response $response
-   * @param \Drupal\Component\Utility\Html             $html
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   * @param \Drupal\Core\Database\Connection           $connection
-   * @param \Drupal\field\Entity\FieldStorageConfig    $field_storage_config
+   * {@inheritdoc}
    */
-  public function __construct(Response $response, Html $html, ConfigFactoryInterface $config_factory, Connection $connection, FieldStorageConfig $field_storage_config) {
+  public function __construct(Response $response, ConfigFactoryInterface $config_factory, Connection $connection, FieldStorageConfig $field_storage_config) {
     $this->response = $response;
-    $this->html = $html;
     $this->config_factory = $config_factory;
     $this->connection = $connection;
     $this->field_storage_config = $field_storage_config;
@@ -98,8 +91,8 @@ class GridstackFieldNodeController extends ControllerBase {
    */
   public function autocompleteCallback($field_name, $string) {
     // Using check functions on output to prevent cross site scripting attacks.
-    $field_name = $this->html->escape($field_name);
-    $string = $this->html->escape($string);
+    $field_name = Html::escape($field_name);
+    $string = Html::escape($string);
 
 //    $field = field_info_field($field_name);
     $field = $this->field_storage_config->loadByName('node', $field_name);

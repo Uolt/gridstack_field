@@ -36,7 +36,7 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
   /**
    * The Config factory service.
    *
-   * @var \Drupal\postal_code\Plugin\Field\FieldWidget\PostalCodeWidget
+   * @var
    */
   protected $config;
 
@@ -44,40 +44,28 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
    * @var \Drupal\gridstack_field\GridstackFieldHelperInterface
    */
   private $helper;
-  /**
-   * @var \Drupal\Component\Utility\Html
-   */
-  private $html;
 
   /**
    * {@inheritdoc}
-   *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The 'postal_code.settings' config.
-   * @param \Drupal\postal_code\PostalCodeValidationInterface $postal_code_validation
-   *    The PostalCodeValidation service.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, ConfigFactoryInterface $config_factory, GridstackFieldHelperInterface $helper, Html $html) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, GridstackFieldHelperInterface $helper) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
-    $this->config = $config_factory->get('postal_code.settings');
     $this->helper = $helper;
-    $this->html = $html;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-//    return new static(
-//      $plugin_id,
-//      $plugin_definition,
-//      $configuration['field_definition'],
-//      $configuration['settings'],
-//      $configuration['third_party_settings'],
-//      $container->get('config.factory'),
-//      $container->get('gridstack_field.helper'),
-//      $container->get('html')
-//    );
+    return new static(
+      $plugin_id,
+      $plugin_definition,
+      $configuration['field_definition'],
+      $configuration['settings'],
+      $configuration['third_party_settings'],
+      $container->get('config.factory'),
+      $container->get('gridstack_field.helper')
+    );
   }
 
   /**
@@ -85,22 +73,25 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $helper = $this->helper;
-    $html = $this->html;
+    $settings = $this->getFieldSettings();
+    $settings = $this->getSettings();
+
+
     // Converting options to boolean type for preventing issues
     // with incorrect types.
     $options = $helper->getOptions('bool');
     foreach ($options as $option) {
-      $field['settings']['row_setting'][$option] = (bool) $field['settings']['row_setting'][$option];
+      $settings[$option] = (bool) $settings[$option];
     }
 
     // Converting options to int type for preventing issues
     // with incorrect types.
     $options = $helper->getOptions('int');
     foreach ($options as $option) {
-      $field['settings']['row_setting'][$option] = intval($field['settings']['row_setting'][$option]);
+      $settings[$option] = intval($settings[$option]);
     }
     // Pass settings into script.
-    $build['#attached']['drupalSettings']['gridstack_field']['settings'] = $field['settings'];
+    $build['#attached']['drupalSettings']['gridstack_field']['settings'] = $settings;
 
     // Add Backbone, Underscore and Gridstack libraries.
     $element['#attached']['library'][] = 'gridstack_field/gridstack_field.library';
@@ -113,8 +104,8 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
       '#type' => 'fieldset',
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
-      '#title' => $html->escape(isset($element['#title']) ? $element['#title'] : ''),
-      '#description' => $html->escape(isset($element['#description']) ? $element['#description'] : ''),
+      '#title' => Html::escape(isset($element['#title']) ? $element['#title'] : ''),
+      '#description' => Html::escape(isset($element['#description']) ? $element['#description'] : ''),
     ];
     $element['gridstack_group']['add_item'] = [
       '#type' => 'button',
@@ -157,9 +148,9 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
    * {@inheritdoc}
    */
   public function validate($element, FormStateInterface $form_state) {
-    $field_settings = $this->getFieldSettings();
-    $validator = $this->postalCodeValidation;
-    $config = $this->config;
-    $value = trim($element['#value']);
+//    $field_settings = $this->getFieldSettings();
+//    $validator = $this->postalCodeValidation;
+//    $config = $this->config;
+//    $value = trim($element['#value']);
   }
 }
