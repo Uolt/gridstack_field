@@ -10,16 +10,13 @@ namespace Drupal\gridstack_field\Plugin\Field\FieldType;
 
 
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\Core\TypedData\TypedDataInterface;
-use Drupal\gridstack_field\GridstackFieldHelperInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\gridstack_field\GridstackFieldHelper;
 
 /**
  * Plugin implementation of the 'postal_code' field type.
@@ -35,16 +32,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class GridstackFieldItem extends FieldItemBase {
 
-  private $helper;
-
-  private $html;
-
   /**
    * {@inheritdoc}
    */
-  public function __construct(DataDefinitionInterface $definition, $name, TypedDataInterface $parent, GridstackFieldHelperInterface $helper) {
+  public function __construct(DataDefinitionInterface $definition, $name, TypedDataInterface $parent) {
     parent::__construct($definition, $name, $parent);
-    $this->helper = $helper;
   }
 
   /**
@@ -96,7 +88,7 @@ class GridstackFieldItem extends FieldItemBase {
         '#title' => Html::escape($type->get('name')),
         '#default_value' => !empty($settings[$key]) ? $settings[$key] : 0,
       ];
-      $displays = $this->helper->getDisplays($key);
+      $displays = GridstackFieldHelper::getDisplaysHelper($key);
       $form[$key . '_display'] = [
         '#type'   => 'container',
         '#states' => [
