@@ -3,7 +3,7 @@
  * Provides GridStack loaders.
  */
 
-(function ($, Drupal, Backbone, settings) {
+;(function ($, Drupal, Backbone, settings) {
   'use strict';
 
   /**
@@ -55,7 +55,7 @@
     var $body = $('body');
     var fieldGridstack = $('.field-type-gridstack-field');
     var $node_edit = false;
-    var options = Drupal.settings.gridstack_field.row_setting;
+    var options = settings.gridstack_field.row_setting;
     // Create backbone collection and get data from field on node edit page.
     if (!$body.hasClass('page-node-edit') && fieldGridstack.length !== 0) {
       collection = new settings.GridstackField.Collections.GridItems();
@@ -69,6 +69,7 @@
       input = (fieldGridstack.find('input[name$="[json]"]').val() !== '') ? fieldGridstack.find('input[name$="[json]"]').val() : '[]';
     }
 
+    console.log(input);
     data = JSON.parse(input);
 
     // If items exits pass them into backbone collection.
@@ -86,4 +87,4 @@
       $('.grid-stack').gridstack(options);
     }
   });
-})(jQuery, Drupal, Backbone, Drupal.settings);
+})(jQuery, Drupal, Backbone, drupalSettings);

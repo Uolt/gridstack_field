@@ -5,7 +5,7 @@
  * Implements collection for containing models of grid items.
  */
 
-(function ($, settings, Backbone) {
+;(function ($, settings, Backbone) {
 
   'use strict';
 
@@ -38,4 +38,4 @@
       new settings.GridstackField.Views.GridField({model: itemModel, collection: this});
     }
   });
-}(jQuery, Drupal.settings, Backbone));
+}(jQuery, drupalSettings, Backbone));

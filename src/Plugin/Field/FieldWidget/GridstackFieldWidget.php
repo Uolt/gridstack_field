@@ -65,7 +65,7 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $helper = $this->helper;
     $settings = $this->getFieldSettings();
-    $settings = $this->getSettings();
+//    $settings = $this->getSettings();
 
 
     // Converting options to boolean type for preventing issues
@@ -82,7 +82,7 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
       $settings[$option] = intval($settings[$option]);
     }
     // Pass settings into script.
-    $build['#attached']['drupalSettings']['gridstack_field']['settings'] = $settings;
+    $element['#attached']['drupalSettings']['gridstack_field']['settings'] = $settings;
 
     // Add Backbone, Underscore and Gridstack libraries.
     $element['#attached']['library'][] = 'gridstack_field/gridstack_field.library';

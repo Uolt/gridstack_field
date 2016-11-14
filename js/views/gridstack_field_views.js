@@ -5,7 +5,7 @@
  * Implements view for outputting structure of field.
  */
 
-(function ($, settings, Backbone) {
+;(function ($, settings, Backbone) {
   'use strict';
 
   // View for adding new elements on add/edit page.
@@ -157,4 +157,4 @@
       return this;
     }
   });
-}(jQuery, Drupal.settings, Backbone));
+}(jQuery, drupalSettings, Backbone));

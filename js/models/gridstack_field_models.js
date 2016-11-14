@@ -5,7 +5,7 @@
  * Implements model functionality for single grid item.
  */
 
-(function ($, settings, Backbone) {
+;(function ($, settings, Backbone) {
 
   'use strict';
 
@@ -35,4 +35,4 @@
       this.url = '/gridstack_field/' + this.id + '/teaser';
     }
   });
-}(jQuery, Drupal.settings, Backbone));
+}(jQuery, drupalSettings, Backbone));
