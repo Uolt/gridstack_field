@@ -10,7 +10,6 @@ namespace Drupal\gridstack_field\Plugin\Field\FieldWidget;
 
 
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
@@ -32,13 +31,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * The Config factory service.
-   *
-   * @var
-   */
-  protected $config;
 
   /**
    * @var \Drupal\gridstack_field\GridstackFieldHelperInterface
@@ -63,7 +55,6 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
       $configuration['field_definition'],
       $configuration['settings'],
       $configuration['third_party_settings'],
-      $container->get('config.factory'),
       $container->get('gridstack_field.helper')
     );
   }
@@ -96,7 +87,9 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
     // Add Backbone, Underscore and Gridstack libraries.
     $element['#attached']['library'][] = 'gridstack_field/gridstack_field.library';
 
-    $value = isset($items[$delta]['json']) ? $items[$delta]['json'] : '';
+//        echo '<pre>' . print_r($items->getFieldDefinition()->getDefaultValueLiteral(), 1) . '</pre>';die;
+//    $value = isset($items->getValue() !== null) ? $items->getValue() : '';
+    $value = $items->getValue();
     $element['items'] = [
       '#markup' => '<div class="gridstack-items"><div class="grid-stack"></div></div>',
     ];
@@ -113,12 +106,20 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
       '#value' => $this->t('Add item'),
       '#executes_submit_callback' => FALSE,
     ];
+//    $element['gridstack_group']['gridstack_autocomplete'] = [
+//      '#type' => 'textfield',
+//      '#title' => $this->t('Node'),
+//      '#maxlength' => 60,
+//      '#autocomplete_path' => 'gridstack_field/' . $this->getBaseId() . '/autocomplete',
+//    ];
+
     $element['gridstack_group']['gridstack_autocomplete'] = [
-      '#type' => 'textfield',
+      '#type' => 'entity_autocomplete',
       '#title' => $this->t('Node'),
       '#maxlength' => 60,
-      '#autocomplete_path' => 'gridstack_field/' . $field['field_name'] . '/autocomplete',
+      '#target_type' => 'node',
     ];
+
     $element['json'] = [
       '#type' => 'textfield',
       '#default_value' => $value,

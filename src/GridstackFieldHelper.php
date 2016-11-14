@@ -46,15 +46,36 @@ class GridstackFieldHelper implements GridstackFieldHelperInterface {
    * {@inheritdoc}
    */
   public function getDisplays($type) {
-    $entity_info = entity_get_info('node');
-    $view_modes = $entity_info['view modes'];
-    $view_mode_settings = field_view_mode_settings('node', $type);
+    $view_modes = \Drupal::entityManager()->getViewModes('node');
+    $view_mode_settings = \Drupal::entityManager()->getViewModeOptionsByBundle('node', $type);
+
+
+//    $view_mode_settings2 = \Drupal::entityManager()->getViewModes('node');
+//    $view_mode_settings3 = \Drupal::entityManager()->getViewModeOptions('node');
+//    $view_mode_settings4 = \Drupal::entityManager()->getViewModeOptionsByBundle('node', $type);
+//    echo '<pre>getViewModes(node):<br>' . print_r($view_mode_settings2, 1) . '</pre>';
+
+
     $displays = array();
     foreach ($view_modes as $view_mode_name => $view_mode_info) {
-      if (!empty($view_mode_settings[$view_mode_name]['custom_settings'])) {
+      if (isset($view_mode_settings[$view_mode_name])) {
         $displays[$view_mode_name] = $view_mode_info['label'];
       }
     }
     return $displays;
+  }
+
+  /**
+   * Static method for calling getOptions.
+   */
+  public static function getOptionsHelper($type) {
+    return self::getOptions($type);
+  }
+
+  /**
+   * Static method for calling getDisplays.
+   */
+  public static function getDisplaysHelper($type) {
+    return self::getDisplays($type);
   }
 }
