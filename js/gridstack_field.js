@@ -13,7 +13,7 @@
     attach: function (context, settings) {
       var collection;
       var $body = $('body');
-      var fieldGridstack = $('.field-type-gridstack-field');
+      var fieldGridstack = $('.field--type-gridstack-field');
       var input;
       var data;
 
@@ -36,9 +36,9 @@
       }
 
       // Add new item into collection and grid.
-      fieldGridstack.find('.form-button').on('click', function (e) {
+      fieldGridstack.find('.form-submit').on('click', function (e) {
         e.preventDefault();
-        var localId = fieldGridstack.find('.form-text').val();
+        var localId = fieldGridstack.find('.form-autocomplete').val();
         collection.addItem(localId);
         return false;
       });
@@ -53,9 +53,9 @@
     var input = '';
     var data;
     var $body = $('body');
-    var fieldGridstack = $('.field-type-gridstack-field');
+    var fieldGridstack = $('.field--type-gridstack-field');
     var $node_edit = false;
-    var options = settings.gridstack_field.row_setting;
+    var options = settings.gridstack_field.settings;
     // Create backbone collection and get data from field on node edit page.
     if (!$body.hasClass('page-node-edit') && fieldGridstack.length !== 0) {
       collection = new settings.GridstackField.Collections.GridItems();
@@ -69,7 +69,6 @@
       input = (fieldGridstack.find('input[name$="[json]"]').val() !== '') ? fieldGridstack.find('input[name$="[json]"]').val() : '[]';
     }
 
-    console.log(input);
     data = JSON.parse(input);
 
     // If items exits pass them into backbone collection.

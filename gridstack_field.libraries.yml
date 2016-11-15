@@ -7,7 +7,7 @@ gridstack_field.library:
   js:
     /sites/libraries/gridstack/gridstack.min.js: {}
     js/models/gridstack_field_models.js: {}
-    js/collection/gridstack_field_collections.js: {}
+    js/collections/gridstack_field_collections.js: {}
     js/views/gridstack_field_views.js: {}
     js/gridstack_field.js: {}
   dependencies:
