@@ -44,21 +44,20 @@ class GridstackFieldNodeController extends ControllerBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(Response $response, ConfigFactoryInterface $config_factory, Connection $connection, FieldStorageConfig $field_storage_config) {
-    $this->response = $response;
+  public function __construct(ConfigFactoryInterface $config_factory, Connection $connection) {
     $this->config_factory = $config_factory;
     $this->connection = $connection;
-    $this->field_storage_config = $field_storage_config;
   }
 
   /**
    * {@inheritdoc}
    */
-//  public static function create(ContainerInterface $container) {
-//    return new static(
-//      $container->get('database')
-//    );
-//  }
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('config.factory'),
+      $container->get('database')
+    );
+  }
 
   /**
    * Callback for loading nodes.
@@ -71,8 +70,6 @@ class GridstackFieldNodeController extends ControllerBase {
   public function nodeCallback(NodeInterface $node, $display = 'teaser') {
     if (!$node->isPublished()) {
       $config = $this->configFactory->get('system.performance');
-      $this->response->headers->set('Status', '404 Not Found');
-
       $fast_404_html = strtr($config->get('fast_404.html'), ['@path' => $this->html->escape(\Drupal::request()->getUri())]);
       return new Response($fast_404_html, Response::HTTP_NOT_FOUND);
     }
@@ -95,7 +92,7 @@ class GridstackFieldNodeController extends ControllerBase {
     $string = Html::escape($string);
 
 //    $field = field_info_field($field_name);
-    $field = $this->field_storage_config->loadByName('node', $field_name);
+    $field = FieldStorageConfig::loadByName('node', $field_name);
 
     // Get array of content types from field settings.
     $type = array_filter($field['settings'], function ($v) {
