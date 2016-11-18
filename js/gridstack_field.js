@@ -39,6 +39,12 @@
       fieldGridstack.find('.form-submit').on('click', function (e) {
         e.preventDefault();
         var localId = fieldGridstack.find('.form-autocomplete').val();
+        //var regexp = /\([0-9]+\)$/g;
+        //var regexp = /(?:\()[0-9]+(?:\))$/g;
+        var regexp = /.+\s\(([\w.]+)\)/;
+        console.log(localId);
+        localId = _.last(regexp.exec(localId));
+        console.log(localId);
         collection.addItem(localId);
         return false;
       });
