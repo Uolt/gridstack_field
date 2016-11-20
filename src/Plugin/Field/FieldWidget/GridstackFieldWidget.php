@@ -122,7 +122,7 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
 
     $element['json'] = [
       '#type' => 'textfield',
-      '#default_value' => $value,
+      '#default_value' => $value[0]['json'],
       '#maxlength' => 2048,
       '#size' => 60,
     ];
@@ -148,10 +148,10 @@ class GridstackFieldWidget extends WidgetBase implements ContainerFactoryPluginI
   /**
    * {@inheritdoc}
    */
-  public function validate($element, FormStateInterface $form_state) {
+//  public function validate($element, FormStateInterface $form_state) {
 //    $field_settings = $this->getFieldSettings();
 //    $validator = $this->postalCodeValidation;
 //    $config = $this->config;
 //    $value = trim($element['#value']);
-  }
+//  }
 }

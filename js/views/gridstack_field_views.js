@@ -13,7 +13,7 @@
     rootElement: '.gridstack-items',
     el: '.grid-stack',
 
-    field: '.field-type-gridstack-field',
+    field: '.field--type-gridstack-field',
 
     events: {
       change: 'changeItems'
@@ -50,12 +50,16 @@
       this.updateJsonField();
       var grid = $('.grid-stack').data('gridstack');
       if (grid) {
+        console.log('EXIST GRID');
         grid.addWidget(item.render().el, x, y, width, height, true);
       }
       else {
+        console.log('NEW GRID');
         this.$el.append(item.render().el);
         // Implements gradstack plugin.
-        var options = Drupal.settings.gridstack_field.row_setting;
+        var options = settings.gridstack_field.settings;
+        console.log(options);
+        console.log($('.gridstack-items .grid-stack'));
         $('.gridstack-items .grid-stack').gridstack(options);
       }
       $(this.field).find('input[name$="[gridstack_group][gridstack_autocomplete]"]').val('');
@@ -68,7 +72,7 @@
     className: 'grid-stack',
     tagName: 'div',
     rootElement: '.gridstack-items',
-    field: '.field-type-gridstack-field',
+    field: '.field--type-gridstack-field',
 
     events: {
       change: 'changeItems'
@@ -105,7 +109,7 @@
       }, this);
 
       $(this.rootElement).html(this.$el);
-      $('.field-type-gridstack-field').find('.field-item').html(this.$el);
+      $('.field--type-gridstack-field').find('.field__item').html(this.$el);
 
       return this;
     }
@@ -130,7 +134,7 @@
       var height = this.model.toJSON().height;
       var id = this.model.toJSON().id;
       var self = this;
-      var $body = $('body');
+      var $node_form = $('.node-form');
       self.$el.append('<div class="grid-stack-item-content"></div>');
 
       // Load content for item.
@@ -138,7 +142,10 @@
         url: href,
         success: function (data) {
           self.$el.find('.grid-stack-item-content').append(data);
-          if ($body.hasClass('page-node-edit') || $body.hasClass('page-node-add')) {
+          //if ($body.hasClass('page-node-edit') || $body.hasClass('page-node-add')) {
+          //  self.$el.find('.grid-stack-item-content').prepend('<button class="remove-item">' + Drupal.t('Remove') + '</button>');
+          //}
+          if ($node_form.length) {
             self.$el.find('.grid-stack-item-content').prepend('<button class="remove-item">' + Drupal.t('Remove') + '</button>');
           }
           // Add events to button here because 'clean' drupal doesn't support 'on' method.

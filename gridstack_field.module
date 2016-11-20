@@ -47,44 +47,20 @@ function gridstack_field_help($path, $arg) {
 }
 
 /**
- * Implements hook_menu().
- *
- * Define menu items and page callbacks.
- */
-//function gridstack_field_menu() {
-//  $items = array();
-//  $items[''] = array(
-//
-//    'theme callback'   => 'ajax_base_page_theme',
-//    'access arguments' => array('access content'),
-//    'page arguments' => array(1),
-//
-//  );
-//  $items[''] = array(
-//    'access arguments' => array('access content'),
-//    'type' => MENU_CALLBACK,
-//    'page arguments' => array(1),
-//
-//  );
-//
-//  return $items;
-//}
-
-/**
  * Implements hook_js_alter().
  *
  *
  * Alters js on pages.
  */
 function gridstack_field_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAssetsInterface $assets) {
-  $path = '//code.jquery.com/jquery-1.12.3.js';
-  $path_ui = '//code.jquery.com/ui/1.11.4/jquery-ui.js';
-  if (!empty($javascript[$path])) {
-    $javascript[$path]['weight'] = -20;
-    $javascript[$path]['every_page'] = TRUE;
-    $javascript[$path_ui]['weight'] = -15;
-    $javascript[$path_ui]['every_page'] = TRUE;
-    unset($javascript['misc/jquery.js']);
-  }
-  return $javascript;
+//  $path = '//code.jquery.com/jquery-1.12.3.js';
+//  $path_ui = '//code.jquery.com/ui/1.11.4/jquery-ui.js';
+//  if (!empty($javascript[$path])) {
+//    $javascript[$path]['weight'] = -20;
+//    $javascript[$path]['every_page'] = TRUE;
+//    $javascript[$path_ui]['weight'] = -15;
+//    $javascript[$path_ui]['every_page'] = TRUE;
+//    unset($javascript['misc/jquery.js']);
+//  }
+//  return $javascript;
 }
