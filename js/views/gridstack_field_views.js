@@ -50,16 +50,12 @@
       this.updateJsonField();
       var grid = $('.grid-stack').data('gridstack');
       if (grid) {
-        console.log('EXIST GRID');
         grid.addWidget(item.render().el, x, y, width, height, true);
       }
       else {
-        console.log('NEW GRID');
         this.$el.append(item.render().el);
         // Implements gradstack plugin.
         var options = settings.gridstack_field.settings;
-        console.log(options);
-        console.log($('.gridstack-items .grid-stack'));
         $('.gridstack-items .grid-stack').gridstack(options);
       }
       $(this.field).find('input[name$="[gridstack_group][gridstack_autocomplete]"]').val('');
@@ -142,9 +138,6 @@
         url: href,
         success: function (data) {
           self.$el.find('.grid-stack-item-content').append(data);
-          //if ($body.hasClass('page-node-edit') || $body.hasClass('page-node-add')) {
-          //  self.$el.find('.grid-stack-item-content').prepend('<button class="remove-item">' + Drupal.t('Remove') + '</button>');
-          //}
           if ($node_form.length) {
             self.$el.find('.grid-stack-item-content').prepend('<button class="remove-item">' + Drupal.t('Remove') + '</button>');
           }

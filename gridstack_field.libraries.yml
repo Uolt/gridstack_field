@@ -3,11 +3,9 @@ gridstack_field.library:
   css:
     theme:
       /sites/libraries/gridstack/gridstack.min.css: {}
-      /sites/libraries/gridstack/gridstack-extra.min.css: {}
       css/gridstack_field.css: {}
   js:
     /sites/libraries/gridstack/gridstack.min.js: {}
-#    /sites/libraries/gridstack/gridstack.all.js: {}
     /sites/libraries/gridstack/gridstack.jQueryUI.min.js: {}
     js/models/gridstack_field_models.js: {}
     js/collections/gridstack_field_collections.js: {}

@@ -45,22 +45,3 @@ function gridstack_field_help($path, $arg) {
       return $output;
   }
 }
-
-/**
- * Implements hook_js_alter().
- *
- *
- * Alters js on pages.
- */
-function gridstack_field_js_alter(&$javascript, \Drupal\Core\Asset\AttachedAssetsInterface $assets) {
-//  $path = '//code.jquery.com/jquery-1.12.3.js';
-//  $path_ui = '//code.jquery.com/ui/1.11.4/jquery-ui.js';
-//  if (!empty($javascript[$path])) {
-//    $javascript[$path]['weight'] = -20;
-//    $javascript[$path]['every_page'] = TRUE;
-//    $javascript[$path_ui]['weight'] = -15;
-//    $javascript[$path_ui]['every_page'] = TRUE;
-//    unset($javascript['misc/jquery.js']);
-//  }
-//  return $javascript;
-}

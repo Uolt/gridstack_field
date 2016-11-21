@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Odyssey
- * Date: 11/05/2016
- * Time: 19:50
- */
 
 namespace Drupal\gridstack_field\Plugin\Field\FieldType;
 
@@ -76,19 +70,13 @@ class GridstackFieldItem extends FieldItemBase {
     $form = parent::fieldSettingsForm($form, $form_state);
     $settings = $this->getSettings();
 
-
-//    $defaults['row_setting'] = field_info_field_settings($field['type']);
-//    $defaults['row_setting'] = $this->defaultFieldSettings();
-//    $settings = array_merge($defaults, $this->getSettings());
-
-
     foreach (node_type_get_types() as $key => $type) {
       $form[$key] = [
         '#type'  => 'checkbox',
         '#title' => Html::escape($type->get('name')),
         '#default_value' => !empty($settings[$key]) ? $settings[$key] : 0,
       ];
-      $displays = GridstackFieldHelper::getDisplaysHelper($key);
+      $displays = GridstackFieldHelper::getDisplays($key);
       $form[$key . '_display'] = [
         '#type'   => 'container',
         '#states' => [
@@ -109,45 +97,45 @@ class GridstackFieldItem extends FieldItemBase {
       '#type' => 'fieldset',
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
-      '#title' => t('Row settings'),
+      '#title' => $this->t('Row settings'),
     ];
     $form['row_setting']['height'] = [
-      '#title' => t('Height'),
+      '#title' => $this->t('Height'),
       '#type' => 'textfield',
       '#default_value' => $settings['height'],
       '#maxlength' => 60,
       '#size' => 60,
     ];
     $form['row_setting']['width'] = [
-      '#title' => t('Width'),
+      '#title' => $this->t('Width'),
       '#type' => 'textfield',
       '#default_value' => $settings['width'],
       '#maxlength' => 60,
       '#size' => 60,
     ];
     $form['row_setting']['cellHeight'] = [
-      '#title' => t('Cell height'),
+      '#title' => $this->t('Cell height'),
       '#type' => 'textfield',
       '#default_value' => $settings['cellHeight'],
       '#maxlength' => 60,
       '#size' => 60,
     ];
     $form['row_setting']['minWidth'] = [
-      '#title' => t('Min width'),
+      '#title' => $this->t('Min width'),
       '#type' => 'textfield',
       '#default_value' => $settings['minWidth'],
       '#maxlength' => 60,
       '#size' => 60,
     ];
     $form['row_setting']['rtl'] = [
-      '#title' => t('RTL'),
+      '#title' => $this->t('RTL'),
       '#type' => 'textfield',
       '#default_value' => $settings['rtl'],
       '#maxlength' => 60,
       '#size' => 60,
     ];
     $form['row_setting']['verticalMargin'] = [
-      '#title' => t('Vertical margin'),
+      '#title' => $this->t('Vertical margin'),
       '#type' => 'textfield',
       '#default_value' => $settings['verticalMargin'],
       '#maxlength' => 60,
@@ -155,63 +143,36 @@ class GridstackFieldItem extends FieldItemBase {
     ];
     $form['row_setting']['animate'] = [
       '#type'  => 'checkbox',
-      '#title' => t('Animate'),
+      '#title' => $this->t('Animate'),
       '#default_value' => $settings['animate'],
     ];
     $form['row_setting']['alwaysShowResizeHandle'] = [
       '#type'  => 'checkbox',
-      '#title' => t('Always show resize handle'),
+      '#title' => $this->t('Always show resize handle'),
       '#default_value' => $settings['alwaysShowResizeHandle'],
     ];
     $form['row_setting']['auto'] = [
       '#type'  => 'checkbox',
-      '#title' => t('Auto'),
+      '#title' => $this->t('Auto'),
       '#default_value' => $settings['auto'],
     ];
     $form['row_setting']['disableDrag'] = [
       '#type'  => 'checkbox',
-      '#title' => t('Disable drag'),
+      '#title' => $this->t('Disable drag'),
       '#default_value' => $settings['disableDrag'],
     ];
     $form['row_setting']['disableResize'] = [
       '#type'  => 'checkbox',
-      '#title' => t('Disable resize'),
+      '#title' => $this->t('Disable resize'),
       '#default_value' => $settings['disableResize'],
     ];
     $form['row_setting']['float'] = [
       '#type'  => 'checkbox',
-      '#title' => t('float'),
+      '#title' => $this->t('float'),
       '#default_value' => $settings['float'],
     ];
 
     return $form;
-
-
-
-    // Get base form from FileItem.
-//    $element = parent::fieldSettingsForm($form, $form_state);
-//    $settings = $this->getSettings();
-//
-//    $options = array('any' => (string) $this->t('Any'));
-//    $postal_code_validation_data = $this->postalCodeValidation->getValidationPatterns();
-//
-//    $countrylist = CountryManager::getStandardList();
-//
-//    foreach ($postal_code_validation_data as $country => $regex) {
-//      $options[$country] = $countrylist[Unicode::strtoupper($country)]->render();
-//    }
-//
-//    $value = isset($settings['country_select']) ? $settings['country_select'] : 'any';
-//
-//    $element['country_select'] = array(
-//      '#type' => 'select',
-//      '#title' => $this->t('Country'),
-//      '#options' => $options,
-//      '#default_value' => $value,
-//      '#description' => $this->t('Select country for validation'),
-//    );
-
-//    return $element;
   }
 
   /**
@@ -235,9 +196,5 @@ class GridstackFieldItem extends FieldItemBase {
   public function isEmpty() {
     $value = $this->get('json')->getValue();
     return $value === NULL || $value === '';
-
-//    if (empty($item['json'])) {
-//      return TRUE;
-//    }
   }
 }

@@ -19,14 +19,6 @@ use Symfony\Component\HttpFoundation\Response;
 class GridstackFieldNodeController extends ControllerBase {
 
   /**
-   * \Symfony\Component\HttpFoundation\Response response
-   */
-  private $response;
-
-
-  private $html;
-
-  /**
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   private $config_factory;
@@ -35,11 +27,6 @@ class GridstackFieldNodeController extends ControllerBase {
    * @var \Drupal\Core\Database\Connection
    */
   private $connection;
-
-  /**
-   * @var \Drupal\field\Entity\FieldStorageConfig
-   */
-  private $field_storage_config;
 
   /**
    * {@inheritdoc}
@@ -70,12 +57,12 @@ class GridstackFieldNodeController extends ControllerBase {
   public function nodeCallback(NodeInterface $node, $display = 'teaser') {
     if (!$node->isPublished()) {
       $config = $this->configFactory->get('system.performance');
-      $fast_404_html = strtr($config->get('fast_404.html'), ['@path' => $this->html->escape(\Drupal::request()->getUri())]);
+      $fast_404_html = strtr($config->get('fast_404.html'), ['@path' => Html::escape(\Drupal::request()->getUri())]);
       return new Response($fast_404_html, Response::HTTP_NOT_FOUND);
     }
     $node_for_displaying = node_view($node, $display);
 
-    return print render($node_for_displaying);
+    return new Response(render($node_for_displaying));
   }
 
   /**
@@ -91,7 +78,6 @@ class GridstackFieldNodeController extends ControllerBase {
     $field_name = Html::escape($field_name);
     $string = Html::escape($string);
 
-//    $field = field_info_field($field_name);
     $field = FieldStorageConfig::loadByName('node', $field_name);
 
     // Get array of content types from field settings.
